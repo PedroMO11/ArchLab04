@@ -1,3 +1,10 @@
+`include "adder.v"
+`include "flopr.v"
+`include "mux2.v"
+`include "regfile.v"
+`include "extend.v"
+`include "alu.v"
+
 module datapath (
 	clk,
 	reset,
