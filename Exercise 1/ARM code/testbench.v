@@ -29,10 +29,12 @@ module testbench;
 		if (MemWrite)
 			if ((DataAdr === 100) & (WriteData === 7)) begin
 				$display("Simulation succeeded");
+				#20;
 				$finish;
 			end
 			else if (DataAdr !== 96) begin
 				$display("Simulation failed");
+				#20;
 				$finish;
 			end
 	initial begin
