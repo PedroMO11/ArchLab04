@@ -23,7 +23,7 @@ module decode (
 	output wire ALUSrc;
 	output wire [1:0] ImmSrc;
 	output wire [1:0] RegSrc;
-	output reg [3:0] ALUControl;
+	output reg [2:0] ALUControl;
 	reg [9:0] controls;
 	wire Branch;
 	wire ALUOp;
