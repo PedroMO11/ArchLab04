@@ -4,7 +4,7 @@
 `include "regfile.v"
 `include "extend.v"
 `include "alu.v"
-`include "byteproc.v"
+`include "byteController.v"
 
 module datapath (
 	clk,
@@ -33,24 +33,26 @@ module datapath (
 	input wire [2:0] ALUControl;
 	input wire MemtoReg;
 	input wire PCSrc;
+	input wire ByteSrc;
 	output wire [3:0] ALUFlags;
 	output wire [31:0] PC;
 	input wire [31:0] Instr;
 	output wire [31:0] ALUResult;
 	output wire [31:0] WriteData;
 	input wire [31:0] ReadData;
-	input wire ByteSrc;
 	wire [31:0] PCNext;
 	wire [31:0] PCPlus4;
 	wire [31:0] PCPlus8;
 	wire [31:0] ExtImm;
 	wire [31:0] SrcA;
 	wire [31:0] SrcB;
+	wire [31:0] SrcBB;
 	wire [31:0] Result;
-	wire [31:0] ByteResult;
-	wire [31:0] FinalResult;
 	wire [3:0] RA1;
 	wire [3:0] RA2;
+	wire [31:0] ByteResult;
+	wire [31:0] FinalResult;
+
 	mux2 #(32) pcmux(
 		.d0(PCPlus4),
 		.d1(FinalResult),
@@ -115,17 +117,24 @@ module datapath (
 	);
 	alu alu(
 		SrcA,
-		SrcB,
+		SrcBB,
 		ALUControl,
 		ALUResult,
 		ALUFlags
 	);
-	byteproc bproc (
+	mux2 #(32) byteMuxAlu(
+		.d0(SrcB),
+		.d1(32'b00000000000000000000000000000000),
+		.s(ByteSrc),
+		.y(SrcBB)
+	);
+	byteController byteC(
 		.Result(Result),
 		.BytePosition(ExtImm),
-		.ByteResult(ByteResult)
-	); 
-	mux2 resultsrc(
+		.ByteResult(ByteResult),
+		.enable(ByteSrc)
+	);
+	mux2 #(32) byteMuxResult(
 		.d0(Result),
 		.d1(ByteResult),
 		.s(ByteSrc),
