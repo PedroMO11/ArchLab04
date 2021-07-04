@@ -4,6 +4,7 @@
 `include "regfile.v"
 `include "extend.v"
 `include "alu.v"
+`include "byteproc.v"
 
 module datapath (
 	clk,
@@ -21,6 +22,7 @@ module datapath (
 	ALUResult,
 	WriteData,
 	ReadData
+	ByteSrc
 );
 	input wire clk;
 	input wire reset;
@@ -37,6 +39,7 @@ module datapath (
 	output wire [31:0] ALUResult;
 	output wire [31:0] WriteData;
 	input wire [31:0] ReadData;
+	input wire ByteSrc;
 	wire [31:0] PCNext;
 	wire [31:0] PCPlus4;
 	wire [31:0] PCPlus8;
@@ -44,11 +47,13 @@ module datapath (
 	wire [31:0] SrcA;
 	wire [31:0] SrcB;
 	wire [31:0] Result;
+	wire [31:0] ByteResult;
+	wire [31:0] FinalResult;
 	wire [3:0] RA1;
 	wire [3:0] RA2;
 	mux2 #(32) pcmux(
 		.d0(PCPlus4),
-		.d1(Result),
+		.d1(FinalResult),
 		.s(PCSrc),
 		.y(PCNext)
 	);
@@ -86,7 +91,7 @@ module datapath (
 		.ra1(RA1),
 		.ra2(RA2),
 		.wa3(Instr[15:12]),
-		.wd3(Result),
+		.wd3(FinalResult),
 		.r15(PCPlus8),
 		.rd1(SrcA),
 		.rd2(WriteData)
@@ -114,5 +119,16 @@ module datapath (
 		ALUControl,
 		ALUResult,
 		ALUFlags
+	);
+	byteproc byteproc (
+		.Result(Result)
+		.BytePosition(ExtImm)
+		.ByteResult(ByteResult)
+	); 
+	mux2 resultsrc(
+		.d0(Result)
+		.d1(ByteResult)
+		.s(ByteSrc)
+		.y(FinalResult)
 	);
 endmodule
