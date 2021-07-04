@@ -21,7 +21,7 @@ module datapath (
 	Instr,
 	ALUResult,
 	WriteData,
-	ReadData
+	ReadData,
 	ByteSrc
 );
 	input wire clk;
@@ -120,15 +120,15 @@ module datapath (
 		ALUResult,
 		ALUFlags
 	);
-	byteproc byteproc (
-		.Result(Result)
-		.BytePosition(ExtImm)
+	byteproc bproc (
+		.Result(Result),
+		.BytePosition(ExtImm),
 		.ByteResult(ByteResult)
 	); 
 	mux2 resultsrc(
-		.d0(Result)
-		.d1(ByteResult)
-		.s(ByteSrc)
+		.d0(Result),
+		.d1(ByteResult),
+		.s(ByteSrc),
 		.y(FinalResult)
 	);
 endmodule

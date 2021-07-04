@@ -10,7 +10,7 @@ module decode (
 	ALUSrc,
 	ImmSrc,
 	RegSrc,
-	ALUControl
+	ALUControl,
 	ByteSrc
 );
 	input wire [1:0] Op;

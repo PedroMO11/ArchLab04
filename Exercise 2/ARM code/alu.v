@@ -21,8 +21,8 @@ module alu(
       casex (ALUControl[2:0]) 
         3'b00?: Result=sum;
         3'b010: Result=a&b;
-	3'b011: Result=a|b;
-	3'b110: Result=a^b;
+	      3'b011: Result=a|b;
+	      3'b110: Result=a^b;
     	endcase    
     end
   
